@@ -11,6 +11,8 @@ int x = 1;
 int main(int argc, char *argv[]) {
     if (5 % (3 * x) + 2 != 4) {
         printf("Hello, world!\n");
+    } else {
+        printf("Goodbye, world!\n");
     }
     return 0;
 }
