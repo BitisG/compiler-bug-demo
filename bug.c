@@ -1,10 +1,7 @@
-// Define main function:
+#include <stdio.h>
+#include <string.h>
 
-int x = 1;
-
-int main(int argc, char *argv[]) {
-    if (5 % (3 * x) + 2 != 4) {
-       __builtin_abort();
-    }
-    return 0;
-}
+int main () { // compile with gcc -Wall -O2 -c bug.c
+    char a[] = "\0abc";
+    return __builtin_memcmp (a, "\0\0\0\0", 4);
+  }
