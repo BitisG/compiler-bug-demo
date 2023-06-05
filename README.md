@@ -1,17 +1,18 @@
 # compiler-bug-demo
 
 
-#GCC versions where it works:
+# GCC versions where it works:
 `9.2-9.5`
 `10.1-10.2`
 
-#Bug showoff:
+# Bug showoff:
 https://godbolt.org/z/8qsveEv9G
 
-#Assembly code
+# Assembly code
 Taken from:
 https://godbolt.org/z/4sdnrsM6v
-`
+
+```
 main:
         mov     DWORD PTR [rsp-12], 0
         mov     eax, DWORD PTR [rsp-12]
@@ -46,4 +47,4 @@ main:
         movzx   eax, al
         neg     eax
         ret
-`
+```
